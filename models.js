@@ -2,7 +2,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-mongoose.connect(process.env.DATABASE_URL, {
+mongoose.connect(process.env.CONNECT_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
