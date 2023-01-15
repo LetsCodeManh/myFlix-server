@@ -1,10 +1,13 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-mongoose.connect("mongod://localhost:27017/dbname", {
+mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+mongoose.set("strictQuery", true);
 
 let movieSchema = mongoose.Schema({
   title: { type: String, required: true },

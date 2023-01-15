@@ -4,16 +4,12 @@ const fs = require("fs");
 const path = require("path");
 const bodyParser = require("body-parser");
 
-
-let myLogger = (req, res, next) => {
-  console.log(req.url);
-  next();
-};
-
-let requestTime = (req, res, next) => {
-  req.requestTime = Date.now();
-  next();
-};
+// ======================
+// === Import Schema
+// ======================
+const models = require("./models.js");
+const movies = models.movie;
+const users = models.user;
 
 // ======================
 // === App
@@ -25,14 +21,27 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, "log.txt"), {
 });
 
 // ======================
-// === Middlewares
+// === Timestamp
 // ======================
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+let myLogger = (req, res, next) => {
+  console.log(req.url);
+  next();
+};
+
+let requestTime = (req, res, next) => {
+  req.requestTime = Date.now();
+  next();
+};
 
 app.use(morgan("combined", { stream: accessLogStream }));
 app.use(myLogger);
 app.use(requestTime);
+
+// ======================
+// === Middlewares
+// ======================
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use(express.static("public"));
 
@@ -52,22 +61,23 @@ app.post("/users", (req, res) => {
     .findOne({ username: req.params.username })
     .then((user) => {
       if (user) {
-        return res.status(400).send(req.body.username + " alrady exists")
+        return res.status(400).send(req.body.username + " alrady exists");
       } else {
-        users.create({
-          username: req.body.username,
-          password: req.body.password,
-          email: req.body.email,
-          birthday: req.body.birthday
-        })
-        .then((user) => {
-          res.status(201).json(user)
-        })
-        .catch((err) => {
-          console.error(err)
-          res.status(500).send("Error: " + err)
-        })
-      };
+        users
+          .create({
+            username: req.body.username,
+            password: req.body.password,
+            email: req.body.email,
+            birthday: req.body.birthday,
+          })
+          .then((user) => {
+            res.status(201).json(user);
+          })
+          .catch((err) => {
+            console.error(err);
+            res.status(500).send("Error: " + err);
+          });
+      }
     })
     .catch((err) => {
       console.log(err);
