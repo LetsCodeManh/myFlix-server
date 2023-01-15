@@ -81,6 +81,17 @@ app.use((err, req, res, next) => {
 });
 
 // ======================
+// === Static
+// ======================
+app.get("/", (req, res) => {
+  res.send("Welcome to my app!");
+});
+
+app.get("/documentation", (req, res) => {
+  res.sendFile("public/documentation.html", { root: __dirname });
+});
+
+// ======================
 // === CRUD - CREATE
 // ======================
 app.post(
@@ -327,17 +338,6 @@ app.delete(
       });
   }
 );
-
-// ======================
-// === Static
-// ======================
-app.get("/", (req, res) => {
-  res.send("Welcome to my app!");
-});
-
-app.get("/documentation", (req, res) => {
-  res.sendFile("public/documentation.html", { root: __dirname });
-});
 
 // ======================
 // === Server Port

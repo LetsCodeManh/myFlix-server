@@ -2,12 +2,12 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+mongoose.set("strictQuery", true);
+
 mongoose.connect(process.env.CONNECT_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
-mongoose.set("strictQuery", true);
 
 let movieSchema = mongoose.Schema({
   title: { type: String, required: true },
