@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 mongoose.set("strictQuery", true);
 
-mongoose.connect(process.env.CONNECT_URI, {
+mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
