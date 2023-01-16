@@ -25,7 +25,7 @@ passport.use(
         if (!user) {
           console.log("Incorrect username");
           return callback(null, false, {
-            message: "Incorrectt username!",
+            message: "Incorrect username!",
           });
         }
 
@@ -45,7 +45,7 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: "69e6b21af9ea8c5eabb8",
+      secretOrKey: process.env.JWT_SECRET,
     },
     (jwtPayload, callback) => {
       return users

@@ -4,11 +4,6 @@ const bcrypt = require("bcrypt");
 
 mongoose.set("strictQuery", true);
 
-mongoose.connect(process.env.DATABASE_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
 let movieSchema = mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },

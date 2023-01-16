@@ -1,5 +1,5 @@
 require("dotenv").config();
-const jwtSecret = "69e6b21af9ea8c5eabb8";
+const jwtSecret = process.env.JWT_SECRET;
 
 const jwt = require("jsonwebtoken");
 const passport = require("passport");

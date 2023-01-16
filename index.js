@@ -9,6 +9,9 @@ const { check, validationResult } = require("express-validator");
 // ======================
 // === Import Schema
 // ======================
+const { connectDb } = require("./db");
+connectDb();
+
 const models = require("./models.js");
 const movies = models.movie;
 const users = models.user;
@@ -48,26 +51,9 @@ app.use(bodyParser.json());
 const cors = require("cors");
 app.use(cors());
 
-// If the cors needs to be specific
-// let allowedOrigins = ["http://localhost:8080", "http://localhost:1234"]
-
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       if (!origin) return callback(null, true);
-//       if (allowedOrigins.indexOf(origin) === -1) {
-//         let message =
-//           "The CORS policy for this application doesn't allow access from origin " +
-//           origin;
-//         return callback(new Error(message), false);
-//       }
-//       return callback(null, true);
-//     },
-//   })
-// );
-
 let auth = require("./auth")(app);
 const passport = require("passport");
+const { request } = require("http");
 require("./passport");
 
 app.use(express.static("public"));
@@ -111,33 +97,34 @@ app.post(
       return res.status(422).json({ errors: errors.array() });
     }
 
-    let hashedPassword = users.hashPassword(req.body.password);
-    users
-      .findOne({ username: req.params.username })
-      .then((user) => {
-        if (user) {
-          return res.status(400).send(req.body.username + " alrady exists");
-        } else {
-          users
-            .create({
-              username: req.body.username,
-              password: hashedPassword,
-              email: req.body.email,
-              birthday: req.body.birthday,
-            })
-            .then((user) => {
-              res.status(201).json(user);
-            })
-            .catch((err) => {
-              console.error(err);
-              res.status(500).send("Error: " + err);
-            });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).send("Error: " + err);
-      });
+    users.hashPassword(req.body.password).then((hashedPassword) => {
+      users
+        .findOne({ username: req.params.username })
+        .then((user) => {
+          if (user) {
+            return res.status(400).send(req.body.username + " alrady exists");
+          } else {
+            users
+              .create({
+                username: req.body.username,
+                password: hashedPassword,
+                email: req.body.email,
+                birthday: req.body.birthday,
+              })
+              .then((user) => {
+                res.status(201).json(user);
+              })
+              .catch((err) => {
+                console.error(err);
+                res.status(500).send("Error: " + err);
+              });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).send("Error: " + err);
+        });
+    });
   }
 );
 
