@@ -15,27 +15,25 @@ passport.use(
       passwordField: "password",
     },
     (username, password, callback) => {
-      console.log(username + " " + password);
-      users.findOne({ username }, (err, user) => {
-        if (err) {
-          return callback(err);
+      users.findOne({ username: username }, (error, user) => {
+        if (error) {
+          console.log(error);
+          return callback(error);
         }
 
         if (!user) {
+          console.log("Incorrect username");
           return callback(null, false, {
             message: "Incorrect username!",
           });
         }
 
-        user
-          .validatePassword(passport)
-          .then((isValid) => {
-            if (!isValid) {
-              return callback(null, false, { message: "Incorrect password" });
-            }
-            return callback(null, user);
-          })
-          .catch(callback);
+        if (!user.validatePassword(password)) {
+          console.error("Incorrect password");
+          return callback(null, false, { message: "Incorrect password!" });
+        }
+
+        return callback(null, user);
       });
     }
   )
@@ -53,8 +51,8 @@ passport.use(
         .then((user) => {
           return callback(null, user);
         })
-        .catch((err) => {
-          return callback(err);
+        .catch((error) => {
+          return callback(error);
         });
     }
   )

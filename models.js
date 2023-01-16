@@ -34,7 +34,6 @@ userSchema.methods.validatePassword = async function (password) {
   if (typeof password !== "string") {
     throw new Error("Password must be a string");
   }
-
   return await bcrypt.compare(password, this.password);
 };
 
