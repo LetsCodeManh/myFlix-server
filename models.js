@@ -2,8 +2,6 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-mongoose.set("strictQuery", true);
-
 let movieSchema = mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
@@ -33,6 +31,10 @@ userSchema.statics.hashPassword = async function (password) {
 };
 
 userSchema.methods.validatePassword = async function (password) {
+  if (typeof password !== "string") {
+    throw new Error("Password must be a string");
+  }
+
   return await bcrypt.compare(password, this.password);
 };
 

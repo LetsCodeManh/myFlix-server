@@ -16,26 +16,26 @@ passport.use(
     },
     (username, password, callback) => {
       console.log(username + " " + password);
-      users.findOne({ username: username }, (err, user) => {
+      users.findOne({ username }, (err, user) => {
         if (err) {
-          console.log(err);
           return callback(err);
         }
 
         if (!user) {
-          console.log("Incorrect username");
           return callback(null, false, {
             message: "Incorrect username!",
           });
         }
 
-        if (!user.validatePassword(passport)) {
-          console.log("Incorrect password");
-          return callback(null, false, { message: "Incorrect password!" });
-        }
-
-        console.log("finished");
-        return callback(null, user);
+        user
+          .validatePassword(passport)
+          .then((isValid) => {
+            if (!isValid) {
+              return callback(null, false, { message: "Incorrect password" });
+            }
+            return callback(null, user);
+          })
+          .catch(callback);
       });
     }
   )
