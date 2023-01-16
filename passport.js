@@ -1,4 +1,3 @@
-require("dotenv").config();
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const models = require("./models.js");
@@ -43,7 +42,7 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_SECRET,
+      secretOrKey: "69e6b21af9ea8c5eabb8",
     },
     (jwtPayload, callback) => {
       return users
