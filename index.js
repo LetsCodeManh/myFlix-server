@@ -279,7 +279,7 @@ app.put(
       .then((user) => {
         res.status(200).json(user);
       })
-      .catcj((err) => {
+      .catch((err) => {
         console.log(err);
         res.status(500).send("Error: " + err);
       });
