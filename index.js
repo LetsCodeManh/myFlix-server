@@ -263,26 +263,29 @@ app.put(
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    users
-      .findOneAndUpdate(
-        { username: req.params.username },
-        {
-          $set: {
-            username: req.body.username,
-            password: req.body.password,
-            email: req.body.email,
-            birthday: req.body.birthday,
+
+    users.hashPassword(req.body.password).then((hashedPassword) => {
+      users
+        .findOneAndUpdate(
+          { username: req.params.username },
+          {
+            $set: {
+              username: req.body.username,
+              password: hashedPassword,
+              email: req.body.email,
+              birthday: req.body.birthday,
+            },
           },
-        },
-        { new: true }
-      )
-      .then((user) => {
-        res.status(200).json(user);
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).send("Error: " + err);
-      });
+          { new: true }
+        )
+        .then((user) => {
+          res.status(200).json(user);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).send("Error: " + err);
+        });
+    });
   }
 );
 
