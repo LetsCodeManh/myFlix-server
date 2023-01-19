@@ -246,7 +246,7 @@ app.get(
 // === CRUD - UPDATE
 // ======================
 app.put(
-  "user/:username",
+  "users/:username",
   passport.authenticate("jwt", { session: false }),
   [
     check("username", "Username is required").isLength({ min: 5 }),
