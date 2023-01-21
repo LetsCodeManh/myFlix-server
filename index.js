@@ -311,13 +311,13 @@ app.delete(
 );
 
 app.delete(
-  "/users/:username/movies/:title",
+  "/users/:username/movies/:_id",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     users
       .findOneAndUpdate(
         { username: req.params.username },
-        { $pull: { favoriteMovies: req.params.title } },
+        { $pull: { favoriteMovies: req.params._id } },
         { new: true }
       )
       .then((user) => {
