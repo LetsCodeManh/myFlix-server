@@ -132,7 +132,7 @@ app.post("/users/:username/movies/:title", (req, res) => {
     .findOneAndUpdate(
       { username: req.params.username },
       { $push: { favoriteMovies: req.params.title } },
-      { mew: true }
+      { new: true }
     )
     .then((user) => {
       res.status(200).json(user);
