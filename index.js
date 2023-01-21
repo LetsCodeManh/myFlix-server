@@ -53,6 +53,7 @@ app.use(cors());
 let auth = require("./auth")(app);
 const passport = require("passport");
 const { request } = require("http");
+const { default: mongoose } = require("mongoose");
 require("./passport");
 
 app.use(express.static("public"));
@@ -127,11 +128,12 @@ app.post(
   }
 );
 
-app.post("/users/:username/movies/:title", (req, res) => {
+app.post("/users/:username/movies/:_id", (req, res) => {
+  const movieId = mongoose.Types.ObjectId(req.params._id);
   users
     .findOneAndUpdate(
       { username: req.params.username },
-      { $push: { favoriteMovies: req.params.title } },
+      { $push: { favoriteMovies: movieId } },
       { new: true }
     )
     .then((user) => {
