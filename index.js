@@ -127,11 +127,11 @@ app.post(
   }
 );
 
-app.post("/users/:username/movies/:_id", (req, res) => {
+app.post("/users/:username/movies/:title", (req, res) => {
   users
     .findOneAndUpdate(
       { username: req.params.username },
-      { $push: { favoriteMovies: req.params._id } },
+      { $push: { favoriteMovies: req.params.title } },
       { mew: true }
     )
     .then((user) => {
@@ -309,13 +309,13 @@ app.delete(
 );
 
 app.delete(
-  "/users/:username/movies/:_id",
+  "/users/:username/movies/:title",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     users
       .findOneAndUpdate(
         { username: req.params.username },
-        { $pull: { favoriteMovies: req.params._id } },
+        { $pull: { favoriteMovies: req.params.title } },
         { new: true }
       )
       .then((user) => {

@@ -60,3 +60,5 @@
 ::1 - - [21/Jan/2023:09:40:19 +0000] "PUT /users/test1 HTTP/1.1" 500 107 "-" "PostmanRuntime/7.30.0"
 ::1 - - [21/Jan/2023:09:41:08 +0000] "PUT /users/test1 HTTP/1.1" 500 107 "-" "PostmanRuntime/7.30.0"
 ::1 - - [21/Jan/2023:09:53:23 +0000] "PUT /users/test1 HTTP/1.1" 200 224 "-" "PostmanRuntime/7.30.0"
+::1 - - [21/Jan/2023:14:34:10 +0000] "PUT /users/test1/movies/63c5ab63cf94258892e4ccd7 HTTP/1.1" 404 182 "-" "PostmanRuntime/7.30.0"
+::1 - - [21/Jan/2023:14:34:41 +0000] "PUT /users/test1/movies/63c5ab63cf94258892e4ccd7 HTTP/1.1" 404 182 "-" "PostmanRuntime/7.30.0"
