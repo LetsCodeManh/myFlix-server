@@ -252,7 +252,7 @@ app.put(
     check("username", "Username is required").isLength({ min: 5 }),
     check(
       "username",
-      "Username contains non alphanumeric characters - not allowed"
+      "Username contains non alphanumeric characters - not allowd"
     ).isAlphanumeric(),
     check("password", "Password is required").not().isEmpty(),
     check("email", "Email does not appear to be valid").isEmail(),
@@ -264,27 +264,28 @@ app.put(
       return res.status(422).json({ errors: errors.array() });
     }
 
-    let hashedPassword = users.hashPassword(req.body.password);
-    users.findOneAndUpdate(
-      { username: req.params.username },
-      {
-        $set: {
-          username: req.body.username,
-          password: hashedPassword,
-          email: req.body.email,
-          birthday: req.body.birthday,
-        },
-      },
-      { new: true },
-      (err, updatedUser) => {
-        if (err) {
-          console.error(err);
+    users.hashPassword(req.body.password).then((hashedPassword) => {
+      users
+        .findOneAndUpdate(
+          { username: req.params.username },
+          {
+            $set: {
+              username: req.body.username,
+              password: hashedPassword,
+              email: req.body.email,
+              birthday: req.body.birthday,
+            },
+          },
+          { new: true }
+        )
+        .then((user) => {
+          res.status(200).json(user);
+        })
+        .catch((err) => {
+          console.log(err);
           res.status(500).send("Error: " + err);
-        } else {
-          res.json(updatedUser);
-        }
-      }
-    );
+        });
+    });
   }
 );
 
