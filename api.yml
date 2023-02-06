@@ -1,0 +1,467 @@
+openapi: "3.0.2"
+info:
+  version: "1.0"
+  title: myFlix API
+  description: Documentation for the REST api access provided at myFlix
+servers:
+  - url: https://young-journey-11100.herokuapp.com/
+paths:
+  /login:
+    post:
+      tags:
+        - Login
+      security:
+        - basicAuth: []
+      summary: Get bearer token as logging in with username and password.
+      description: >
+        Once the respose is received with the JWT it shall be used with each request (in the authorization header) as a bearer token in order to be authenticated for API calls.
+      operationId: getToken
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+            format: username
+            example: karcsika
+          description: The user's username.
+        - in: query
+          name: password
+          schema:
+            type: string
+            format: password
+            example: élssjéljfáajfá74
+          description: The user's password.
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userWithToken"
+        "5XX":
+          description: Unexpected error.
+
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Create new user.
+      operationId: createUser
+      security: []
+      requestBody:
+        description: The `user` object in json format.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user"
+
+      responses:
+        "201":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userWithId"
+        "5XX":
+          description: Unexpected error.
+    get:
+      tags:
+        - Users
+      summary: Gets all users.
+      operationId: getAllUsers
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/arrayOfUsers"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "5XX":
+          description: Unexpected error.
+
+  /movies:
+    get:
+      tags:
+        - Movies
+      summary: Gets all movies.
+      operationId: getAllMovies
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/arrayOfMovies"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "5XX":
+          description: Unexpected error.
+
+  /movies/{title}:
+    get:
+      tags:
+        - Movies
+      summary: Gets a movie by title.
+      operationId: getMovieByTitle
+      parameters:
+        - name: title
+          in: path
+          description: Movie title
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/movie"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "5XX":
+          description: Unexpected error.
+
+  /movies/genres/{genreName}:
+    get:
+      tags:
+        - Movies
+      summary: Gets the genre by name.
+      operationId: getGenreByName
+      parameters:
+        - name: genreName
+          in: path
+          description: Genre name
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/genre"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "5XX":
+          description: Unexpected error.
+  /movies/directors/{directorName}:
+    get:
+      tags:
+        - Movies
+      summary: Gets the director by name.
+      operationId: getDirectorByName
+      parameters:
+        - name: directorName
+          in: path
+          description: Director name
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/director"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "5XX":
+          description: Unexpected error.
+
+  /users/{username}:
+    get:
+      tags:
+        - Users
+      summary: Gets a user by username.
+      operationId: getUserByUsername
+      parameters:
+        - name: username
+          in: path
+          description: User username
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userWithId"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "5XX":
+          description: Unexpected error.
+    put:
+      tags:
+        - Users
+      summary: Update user's details.
+      operationId: UpdateUser
+      parameters:
+        - name: username
+          in: path
+          description: User username
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The `user` object in json format.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userWithId"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "5XX":
+          description: Unexpected error.
+    delete:
+      tags:
+        - Users
+      summary: Delete user.
+      operationId: DeleteUser
+      parameters:
+        - name: username
+          in: path
+          description: User username
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A user with the specified ID was deleted.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: A user with the specified ID was not found.
+        "5XX":
+          description: Unexpected error.
+
+  /users/{username}/movies/{movieId}:
+    post:
+      tags:
+        - Users
+      summary: Add movie to user's favorite movies.
+      operationId: AddUserFavoriteMovie
+      parameters:
+        - name: username
+          in: path
+          description: User username
+          required: true
+          schema:
+            type: string
+        - name: movieId
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userWithId"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "5XX":
+          description: Unexpected error.
+    delete:
+      tags:
+        - Users
+      summary: Delete movie from user's favorite movies.
+      operationId: DeleteUserFavoriteMovie
+      parameters:
+        - name: username
+          in: path
+          description: User username
+          required: true
+          schema:
+            type: string
+        - name: movieId
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: number
+      requestBody:
+        description: The `user` object in json format.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "5XX":
+          description: Unexpected error.
+
+components:
+  schemas:
+    movie:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Automatically assigned ID of the movie
+          example: 6399b9f402e2cbd3f76be70f
+        title:
+          type: string
+          description: The title of the movie
+        description:
+          type: string
+          description: The description of the movie
+        genre:
+          type: object
+          description: The genre of the movie
+          $ref: "#/components/schemas/genre"
+        director:
+          type: object
+          description: The director of the movie
+          $ref: "#/components/schemas/director"
+        imageURL:
+          type: string
+          format: uri
+          description: The image URL of the movie
+        featured:
+          type: boolean
+          description: Whether the movie is featured or not
+        actors:
+          type: array
+          description: Actor's object IDs
+          items:
+            type: string
+            format: id
+            example: 6399b9f402e2cbd3f76be70f
+      required:
+        - title
+        - description
+
+    arrayOfMovies:
+      type: array
+      description: List of all movies
+      items:
+        $ref: "#/components/schemas/movie"
+
+    user:
+      type: object
+      properties:
+        username:
+          type: string
+          format: username
+          description: The username of the user
+          example: karcsika
+        password:
+          type: string
+          description: The password of the user
+          example: élssjéljfáajfá74
+        email:
+          type: string
+          format: email
+          description: The email of the user
+        birthday:
+          type: string
+          format: date
+          description: The birthday of the user
+        favoriteMovies:
+          type: array
+          description: Movie object IDs
+          items:
+            type: string
+            format: id
+            example: 6399b9f402e2cbd3f76be70f
+      required:
+        - username
+        - password
+        - email
+
+    userWithId:
+      allOf:
+        - type: object
+          properties:
+            _id:
+              type: string
+              description: Automatically assigned user ID
+              format: id
+              example: 6399b9f402e2cbd3f76be70f
+        - $ref: "#/components/schemas/user"
+
+    userWithToken:
+      allOf:
+        - $ref: "#/components/schemas/userWithId"
+        - type: object
+          properties:
+            token:
+              type: string
+              description: Automatically assigned JWT token
+              format: token
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2ExYjZiYTYzOTNkZTc3NWFmY2I5OGQiLCJ1c2VybmFtZSI6ImNzb2NzbyIsInBhc3N3b3JkIjoiJDJiJDEwJE05dXpleDlnMk1zemFnYWFoV01oS3ViYUJsZmtDRWN0dEFQUXlOcHNIWVRUWDVHVWp2UmFHIiwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwiYmlydGhkYXkiOiIyMDIyLTEyLTE0VDAwOjAwOjAwLjAwMFoiLCJmYXZvcml0ZU1vdmllcyI6W10sIl9fdiI6MCwiaWF0IjoxNjcxNTQyNjgyLCJleHAiOjE2NzIxNDc0ODIsInN1YiI6ImNzb2NzbyJ9.wZiHnuEWHUMZT1lDg7gdBY_BjQHLJ9YeMFIS5pSv71E
+
+    arrayOfUsers:
+      type: array
+      description: List of all users
+      items:
+        $ref: "#/components/schemas/userWithId"
+
+    genre:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the genre
+        description:
+          type: string
+          description: The description of the genre
+
+    director:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the director
+        bio:
+          type: string
+          description: The bio of the director
+
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+
+    basicAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
+
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+
+security:
+  - bearerAuth: []

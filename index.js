@@ -70,16 +70,13 @@ app.use((err, req, res, next) => {
 // === Static
 // ======================
 app.get("/", (req, res) => {
-  res.send("Welcome to my app!");
+  res.send("<a href='https://app.swaggerhub.com/apis-docs/LetsCodeManh/my-flix_server_api/1.0.0'>To the Api</a>");
 });
 
 app.get("/documentation", (req, res) => {
   res.sendFile("public/documentation.html", { root: __dirname });
 });
 
-// ======================
-// === CRUD - CREATE
-// ======================
 app.post(
   "/users",
   [
